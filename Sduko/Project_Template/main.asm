@@ -5,8 +5,13 @@
 INCLUDE Irvine32.inc
 BUFFER_SIZE = 5000
 .data
+unsolved byte 81 dup (?)
+solved byte 81 dup (?)
+line byte 3, 6, 12, 15, 21, 24, 30, 33, 39, 42, 48, 51, 57, 60, 66, 69, 75, 78
+dash byte 27,54
+
 buffer BYTE BUFFER_SIZE DUP(?)
-filename BYTE ""
+filename BYTE "rawan.txt"
 fileHandle HANDLE ?
 stringLength DWORD ? 
 starttime DWORD ?
@@ -15,9 +20,11 @@ endtime DWORD ?
 main PROC
 INVOKE GetTickCount                        ; gets the current time
 mov starttime , eax
-;call ReadBoardFile                        ; reads the data from the file to the buffer
-call SaveTheBoard
-
+call ReadBoardFile                        ; reads the data from the file to the buffer
+;call SaveTheBoard
+;call display
+mov edx ,offset buffer
+call writestring
 
 INVOKE GetTickCount
 sub eax , starttime
@@ -106,5 +113,72 @@ RET
 
 SaveTheBoard ENDP
 
+display proc
+
+pushad
+mov ecx,81
+mov edi ,offset unsolved
+mov edx, 0
+mov esi, 1
+mov ebx, 9
+mov eax, 0
+l1:
+	push eax
+	mov eax,[edi]
+	call writedec
+	mov al, ' '
+	call writechar
+	pop eax
+	cmp ebx,esi
+	jne end_if_1
+		call crlf
+		add ebx, 9
+	end_if_1:
+	push edx
+	mov edx, offset line
+	push eax
+	movzx eax, al
+	add edx, eax
+	pop eax 
+	movzx edx, byte ptr[edx]
+	cmp	esi, edx
+	pop edx
+	jne end_if_2
+		push eax
+		mov al, '|'
+		call writechar
+		mov al, ' '
+		call writechar
+		pop eax
+		inc al
+	end_if_2:
+	push edx
+	mov edx, offset dash
+	push eax
+	movzx eax, ah
+	add edx, eax
+	pop eax 
+	movzx edx, byte ptr[edx]
+	cmp	esi, edx
+	pop edx
+	jne end_if_3
+		push eax
+		push ecx
+		mov al, '-'
+		mov ecx, 21
+		l2:
+			call writechar
+		loop l2
+		pop ecx
+		pop eax
+		call crlf
+		inc ah
+	end_if_3:
+	inc esi
+	inc edi
+loop l1
+popad
+ret
+display endp
 
 END main
