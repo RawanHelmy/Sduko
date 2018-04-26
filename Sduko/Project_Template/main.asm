@@ -21,10 +21,13 @@ main PROC
 INVOKE GetTickCount                        ; gets the current time
 mov starttime , eax
 call ReadBoardFile                        ; reads the data from the file to the buffer
-;call SaveTheBoard
-;call display
-mov edx ,offset buffer
-call writestring
+
+
+;call SaveTheBoard                         ;l 3ashan el function de tsht3'l 7oto ay 7aga f el buffer 
+;call display                               ; bta3t fatma w esraaa
+
+mov edx ,offset buffer                     ; b3d ma aret mn el file 7ateto f el buffer 
+call writestring                           ;w btl3o  
 
 INVOKE GetTickCount
 sub eax , starttime
@@ -64,12 +67,12 @@ mov buffer[eax],0                            ; insert null terminator
 
 
 mov ecx , eax                                ; change zeros to the character
-mov edx, 0
+mov edx, 0                                   ; b3'ayr e; zero b dash 3ashn mostafa kn 3yz keda 
 mov bl , '_'                           
 l1 :
 cmp buffer[edx] , '0'
-jz en
-jmp l2
+jz en                                        ; ana tol el w2t ht3ml m3 el buffer 
+jmp l2                                       ; k2no characters w strings mfesh 7aga hena f el code da esmaha int
 en:
 mov buffer[edx] ,bl
 l2 :
@@ -113,7 +116,7 @@ RET
 
 SaveTheBoard ENDP
 
-display proc
+display proc  ; bta3 fatma w esraa
 
 pushad
 mov ecx,81
